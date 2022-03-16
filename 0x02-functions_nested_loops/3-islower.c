@@ -1,4 +1,4 @@
-nclude "main.h"
+#include <stdio.h>
 
 /**
  *  * _islower - prints 1 or 0 depending on input
