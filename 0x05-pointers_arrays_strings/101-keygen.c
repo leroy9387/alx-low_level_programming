@@ -36,3 +36,4 @@ int main(void)
 		printf("%c", password[j]);
 	}
 	return (0);
+}
