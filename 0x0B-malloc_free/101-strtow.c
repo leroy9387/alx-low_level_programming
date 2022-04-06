@@ -1,52 +1,84 @@
 #include "main.h"
+#include <stdio.h>
 #include <stdlib.h>
-
 /**
- * argstostr - concatenates all the arguments of a program.
- * @ac: argument count.
- * @av: argument vector.
+ * _wcount - counts number of words
+ * @sw: string
  *
- * Return: pointer of an array of char
+ * Return: int
  */
-char *argstostr(int ac, char **av)
+int _wcount(char *sw)
 {
-	char *aout;
-	int c, i, j, ia;
+	int l, wc;
 
-	if (ac == 0)
-		return (NULL);
-
-	for (c = i = 0; i < ac; i++)
+	l = 0, wc = 0;
+	if (*(sw + l) == ' ')
+		l++;
+	while (*(sw + l))
 	{
-		if (av[i] == NULL)
-			return (NULL);
-
-		for (j = 0; av[i][j] != '\0'; j++)
-			c++;
-		c++;
+		if (*(sw + l) == ' ' && *(sw + l - 1) != ' ')
+			wc++;
+		if (*(sw + l) != ' '  && *(sw + l + 1) == 0)
+			wc++;
+		l++;
 	}
+	return (wc);
+}
+/**
+ * _trspace - Moves adress to remove trailig whitespaces
+ * @st: string
+ *
+ * Return: Pointer
+ */
+char *_trspace(char *st)
+{
+	while (*st == ' ')
+		st++;
+	return (st);
+}
+/**
+ * strtow - splits a string into words
+ * @str: string
+ *
+ * Return: Double Pointer
+ */
+char **strtow(char *str)
+{
+	char **s, *ts;
+	int l, l2, wc, i, j, fr, k;
 
-	aout = malloc((c + 1) * sizeof(char));
-
-	if (aout == NULL)
+	if (str == NULL || *str == 0)
+		return (0);
+	fr = 0;
+	wc = _wcount(str);
+	if (wc == 0)
+		return (0);
+	s = malloc((wc + 1) * sizeof(char *));
+	if (s == 0)
+		return (0);
+	ts = _trspace(str);
+	for (i = 0; i < wc; i++)
 	{
-		free(aout);
-		return (NULL);
-	}
-
-	for (i = j = ia = 0; ia < c; j++, ia++)
-	{
-		if (av[i][j] == '\0')
+		l = 0;
+		while (*(ts + l) != ' ' && *(ts + l) != 0)
+			l++;
+		s[i] = malloc((l + 1) * sizeof(char));
+		if (s[i] == 0)
 		{
-			aout[ia] = '\n';
-			i++;
-			ia++;
-			j = 0;
+			fr = 1;
+			break;
 		}
-		if (ia < c - 1)
-			aout[ia] = av[i][j];
+		for (j = 0, l2 = 0; l2 < l; l2++, j++)
+			s[i][j] = *(ts + l2);
+		s[i][j] = '\0';
+		ts = _trspace(ts + l);
 	}
-	aout[ia] = '\0';
-
-	return (aout);
+	s[i] = NULL;
+	if (fr == 1)
+	{
+		for (k = 0; k <= i; k++)
+			free(s[k]);
+		free(s);
+	}
+	return (s);
 }
